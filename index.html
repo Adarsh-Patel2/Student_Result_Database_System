@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SRMS — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🎓</span>
+        <span class="brand-name">SRMS</span>
+        <span class="brand-sub">Student Result Management</span>
+      </div>
+      <a href="add-student.html" class="btn btn-primary">+ Add Student</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="page-title-row">
+      <h1 class="page-title">All Students</h1>
+      <span class="student-count" id="studentCount">— students</span>
+    </div>
+
+    <div class="card">
+      <table class="data-table" id="studentTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Roll Number</th>
+            <th>Grade</th>
+            <th>Percentage</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <p class="empty-icon">📭</p>
+        <p class="empty-msg">No students added yet.</p>
+        <a href="add-student.html" class="btn btn-primary">Add your first student</a>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const students = SRMSStorage.getStudents();
+      const tbody = document.getElementById('studentTableBody');
+      const emptyState = document.getElementById('emptyState');
+      const table = document.getElementById('studentTable');
+      const countEl = document.getElementById('studentCount');
+
+      countEl.textContent = `${students.length} student${students.length !== 1 ? 's' : ''}`;
+
+      if (students.length === 0) {
+        table.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      students.forEach((student, index) => {
+        const result = calculateResult(student.subjects || []);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="row-num">${index + 1}</td>
+          <td class="student-name">${student.name}</td>
+          <td class="roll">${student.rollNumber}</td>
+          <td><span class="grade-badge grade-${result.grade.replace('+', 'plus')}">${result.grade}</span></td>
+          <td class="pct">${result.percentage}%</td>
+          <td class="actions">
+            <a href="result.html?id=${student.id}" class="btn btn-sm btn-outline">View Result</a>
+            <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+
+    function deleteStudent(id) {
+      if (!confirm('Delete this student and all their results?')) return;
+      SRMSStorage.deleteStudent(id);
+      location.reload();
+    }
+  </script>
+
+</body>
+</html>
