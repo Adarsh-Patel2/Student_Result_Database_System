@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SRMS — Add Student</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+ 
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🎓</span>
+        <span class="brand-name">SRMS</span>
+        <span class="brand-sub">Student Result Management</span>
+      </div>
+      <a href="index.html" class="btn btn-outline">← Dashboard</a>
+    </div>
+  </header>
+ 
+  <main class="container container-narrow">
+ 
+    <div class="page-title-row">
+      <h1 class="page-title">Add Student</h1>
+    </div>
+ 
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label" for="studentName">Full Name</label>
+        <input
+          class="form-input"
+          type="text"
+          id="studentName"
+          placeholder="e.g. Rahul Sharma"
+          autocomplete="off"
+        />
+        <span class="field-error" id="nameError"></span>
+      </div>
+ 
+      <div class="form-group">
+        <label class="form-label" for="rollNumber">Roll Number</label>
+        <input
+          class="form-input"
+          type="text"
+          id="rollNumber"
+          placeholder="e.g. CS2024001"
+          autocomplete="off"
+        />
+        <span class="field-error" id="rollError"></span>
+      </div>
+ 
+      <div class="form-actions">
+        <a href="index.html" class="btn btn-ghost">Cancel</a>
+        <button class="btn btn-primary" id="saveBtn">Save Student</button>
+      </div>
+    </div>
+ 
+  </main>
+ 
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const name = document.getElementById('studentName').value.trim();
+      const roll = document.getElementById('rollNumber').value.trim();
+      let valid = true;
+ 
+      document.getElementById('nameError').textContent = '';
+      document.getElementById('rollError').textContent = '';
+ 
+      if (!name) {
+        document.getElementById('nameError').textContent = 'Name is required.';
+        valid = false;
+      }
+      if (!roll) {
+        document.getElementById('rollError').textContent = 'Roll number is required.';
+        valid = false;
+      } else {
+        const existing = SRMSStorage.getStudents().find(s => s.rollNumber === roll);
+        if (existing) {
+          document.getElementById('rollError').textContent = 'This roll number already exists.';
+          valid = false;
+        }
+      }
+ 
+      if (!valid) return;
+ 
+      const student = {
+        id: Date.now().toString(),
+        name,
+        rollNumber: roll,
+        subjects: []
+      };
+ 
+      SRMSStorage.saveStudent(student);
+      window.location.href = `result.html?id=${student.id}`;
+    });
+ 
+    // Allow Enter key to submit
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('saveBtn').click();
+    });
+  </script>
+ 
+</body>
+</html>

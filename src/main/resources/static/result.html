@@ -1,0 +1,227 @@
+
+Result · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SRMS — Result</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+ 
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon">🎓</span>
+        <span class="brand-name">SRMS</span>
+        <span class="brand-sub">Student Result Management</span>
+      </div>
+      <a href="index.html" class="btn btn-outline">← Dashboard</a>
+    </div>
+  </header>
+ 
+  <main class="container">
+ 
+    <!-- Student Info Bar -->
+    <div class="student-info-bar" id="studentInfoBar">
+      <div>
+        <p class="info-label">Student</p>
+        <p class="info-value" id="infoName">—</p>
+      </div>
+      <div>
+        <p class="info-label">Roll Number</p>
+        <p class="info-value" id="infoRoll">—</p>
+      </div>
+      <div>
+        <p class="info-label">Total Marks</p>
+        <p class="info-value" id="infoTotal">—</p>
+      </div>
+      <div>
+        <p class="info-label">Percentage</p>
+        <p class="info-value" id="infoPct">—</p>
+      </div>
+      <div>
+        <p class="info-label">Grade</p>
+        <p class="info-value" id="infoGrade">—</p>
+      </div>
+    </div>
+ 
+    <div class="result-layout">
+ 
+      <!-- Add Subject Form -->
+      <div class="card form-card">
+        <h2 class="card-title">Add Subject</h2>
+ 
+        <div class="form-group">
+          <label class="form-label" for="subjectName">Subject Name</label>
+          <input class="form-input" type="text" id="subjectName" placeholder="e.g. Mathematics" autocomplete="off"/>
+          <span class="field-error" id="subjectNameError"></span>
+        </div>
+ 
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="marksObtained">Marks Obtained</label>
+            <input class="form-input" type="number" id="marksObtained" placeholder="e.g. 82" min="0"/>
+            <span class="field-error" id="marksError"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="maxMarks">Max Marks</label>
+            <input class="form-input" type="number" id="maxMarks" placeholder="e.g. 100" min="1"/>
+            <span class="field-error" id="maxError"></span>
+          </div>
+        </div>
+ 
+        <button class="btn btn-primary btn-full" id="addSubjectBtn">Add Subject</button>
+      </div>
+ 
+      <!-- Subjects Table -->
+      <div class="card subjects-card">
+        <h2 class="card-title">Subjects</h2>
+ 
+        <table class="data-table" id="subjectsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Subject</th>
+              <th>Obtained</th>
+              <th>Max</th>
+              <th>%</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="subjectsTableBody"></tbody>
+        </table>
+ 
+        <div class="empty-state" id="subjectEmpty" style="display:none;">
+          <p class="empty-icon">📝</p>
+          <p class="empty-msg">No subjects added yet.</p>
+        </div>
+      </div>
+ 
+    </div>
+  </main>
+ 
+  <script src="app.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id');
+ 
+    if (!studentId) window.location.href = 'index.html';
+ 
+    let student = SRMSStorage.getStudents().find(s => s.id === studentId);
+    if (!student) window.location.href = 'index.html';
+ 
+    function renderAll() {
+      student = SRMSStorage.getStudents().find(s => s.id === studentId);
+      renderInfo();
+      renderSubjects();
+    }
+ 
+    function renderInfo() {
+      const result = calculateResult(student.subjects || []);
+      document.getElementById('infoName').textContent = student.name;
+      document.getElementById('infoRoll').textContent = student.rollNumber;
+      document.getElementById('infoTotal').textContent =
+        student.subjects.length > 0 ? `${result.totalObtained} / ${result.totalMax}` : '—';
+      document.getElementById('infoPct').textContent =
+        student.subjects.length > 0 ? `${result.percentage}%` : '—';
+ 
+      const gradeEl = document.getElementById('infoGrade');
+      gradeEl.textContent = student.subjects.length > 0 ? result.grade : '—';
+      gradeEl.className = `info-value grade-badge grade-${result.grade.replace('+', 'plus')}`;
+      if (student.subjects.length === 0) gradeEl.className = 'info-value';
+    }
+ 
+    function renderSubjects() {
+      const tbody = document.getElementById('subjectsTableBody');
+      const empty = document.getElementById('subjectEmpty');
+      const table = document.getElementById('subjectsTable');
+      tbody.innerHTML = '';
+ 
+      const subjects = student.subjects || [];
+ 
+      if (subjects.length === 0) {
+        table.style.display = 'none';
+        empty.style.display = 'flex';
+        return;
+      }
+ 
+      table.style.display = 'table';
+      empty.style.display = 'none';
+ 
+      subjects.forEach((sub, i) => {
+        const pct = ((sub.marksObtained / sub.maxMarks) * 100).toFixed(1);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="row-num">${i + 1}</td>
+          <td>${sub.subjectName}</td>
+          <td>${sub.marksObtained}</td>
+          <td>${sub.maxMarks}</td>
+          <td class="pct">${pct}%</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="removeSubject('${sub.id}')">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+ 
+    function removeSubject(subId) {
+      student.subjects = student.subjects.filter(s => s.id !== subId);
+      SRMSStorage.updateStudent(student);
+      renderAll();
+    }
+ 
+    document.getElementById('addSubjectBtn').addEventListener('click', () => {
+      const name = document.getElementById('subjectName').value.trim();
+      const obtained = parseFloat(document.getElementById('marksObtained').value);
+      const max = parseFloat(document.getElementById('maxMarks').value);
+      let valid = true;
+ 
+      document.getElementById('subjectNameError').textContent = '';
+      document.getElementById('marksError').textContent = '';
+      document.getElementById('maxError').textContent = '';
+ 
+      if (!name) {
+        document.getElementById('subjectNameError').textContent = 'Subject name is required.';
+        valid = false;
+      }
+      if (isNaN(obtained) || obtained < 0) {
+        document.getElementById('marksError').textContent = 'Enter valid marks.';
+        valid = false;
+      }
+      if (isNaN(max) || max < 1) {
+        document.getElementById('maxError').textContent = 'Max marks must be at least 1.';
+        valid = false;
+      }
+      if (!isNaN(obtained) && !isNaN(max) && obtained > max) {
+        document.getElementById('marksError').textContent = 'Cannot exceed max marks.';
+        valid = false;
+      }
+ 
+      if (!valid) return;
+ 
+      student.subjects = student.subjects || [];
+      student.subjects.push({
+        id: Date.now().toString(),
+        subjectName: name,
+        marksObtained: obtained,
+        maxMarks: max
+      });
+ 
+      SRMSStorage.updateStudent(student);
+ 
+      document.getElementById('subjectName').value = '';
+      document.getElementById('marksObtained').value = '';
+      document.getElementById('maxMarks').value = '';
+ 
+      renderAll();
+    });
+ 
+    renderAll();
+  </script>
+ 
+</body>
+</html>
+ 
