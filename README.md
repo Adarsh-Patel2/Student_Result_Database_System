@@ -53,3 +53,6 @@ Student-Result-Management-System
 - Student Management Module
 - Result Generation Module
 - Database Integration
+
+
+### THIS PROJECT IS STILL IN PROGRESS
