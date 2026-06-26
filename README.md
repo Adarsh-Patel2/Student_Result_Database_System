@@ -56,3 +56,4 @@ Student-Result-Management-System
 
 
 ### THIS PROJECT IS STILL IN PROGRESS
+### Working on full JDBC instead of Using JPA
