@@ -1,0 +1,376 @@
+
+:root {
+  --bg-base:       #0f1117;
+  --bg-surface:    #181c27;
+  --bg-elevated:   #1e2335;
+  --border:        #2a2f45;
+  --border-focus:  #4f6ef7;
+ 
+  --text-primary:  #e8eaf0;
+  --text-secondary:#8b93a8;
+  --text-muted:    #555d72;
+ 
+  --accent:        #4f6ef7;
+  --accent-hover:  #3d5ce0;
+  --danger:        #e05252;
+  --danger-hover:  #c94141;
+ 
+  --grade-aplus:   #34d399;
+  --grade-a:       #60a5fa;
+  --grade-b:       #a78bfa;
+  --grade-c:       #fbbf24;
+  --grade-fail:    #f87171;
+ 
+  --radius:        8px;
+  --radius-lg:     12px;
+  --font:          'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono:     'Cascadia Code', 'Fira Code', monospace;
+}
+ 
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+html { font-size: 15px; }
+ 
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+ 
+a { color: inherit; text-decoration: none; }
+ 
+/* --- Header --- */
+.app-header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+ 
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.brand-icon { font-size: 1.4rem; }
+ 
+.brand-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+ 
+.brand-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border);
+  padding-left: 10px;
+  margin-left: 2px;
+}
+ 
+/* --- Container --- */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+ 
+.container-narrow {
+  max-width: 520px;
+}
+ 
+/* --- Page Title Row --- */
+.page-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+ 
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+ 
+.student-count {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+ 
+/* --- Card --- */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+ 
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
+}
+ 
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+ 
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+ 
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+ 
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost:hover { color: var(--text-primary); }
+ 
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+.btn-danger:hover {
+  background: rgba(224, 82, 82, 0.1);
+  border-color: var(--danger);
+}
+ 
+.btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+ 
+.btn-full { width: 100%; margin-top: 4px; }
+ 
+/* --- Forms --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+ 
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+ 
+.form-input {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: var(--font);
+  transition: border-color 0.15s;
+  outline: none;
+}
+ 
+.form-input::placeholder { color: var(--text-muted); }
+.form-input:focus { border-color: var(--border-focus); }
+ 
+/* Remove number input arrows */
+.form-input[type="number"]::-webkit-inner-spin-button,
+.form-input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+.form-input[type="number"] { -moz-appearance: textfield; }
+ 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+ 
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+ 
+.field-error {
+  font-size: 0.78rem;
+  color: var(--danger);
+  min-height: 16px;
+}
+ 
+/* --- Table --- */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+ 
+.data-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+ 
+.data-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+ 
+.data-table tbody tr:last-child td { border-bottom: none; }
+ 
+.data-table tbody tr:hover { background: var(--bg-elevated); }
+ 
+.row-num { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem; }
+.student-name { font-weight: 500; }
+.roll { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-secondary); }
+.pct { font-family: var(--font-mono); color: var(--text-secondary); }
+ 
+.actions { display: flex; gap: 8px; align-items: center; }
+ 
+/* --- Grade Badges --- */
+.grade-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+ 
+.grade-Aplus, .grade-aplus { background: rgba(52, 211, 153, 0.15); color: var(--grade-aplus); }
+.grade-A, .grade-a         { background: rgba(96, 165, 250, 0.15); color: var(--grade-a); }
+.grade-B, .grade-b         { background: rgba(167, 139, 250, 0.15); color: var(--grade-b); }
+.grade-C, .grade-c         { background: rgba(251, 191, 36, 0.15);  color: var(--grade-c); }
+.grade-Fail, .grade-fail   { background: rgba(248, 113, 113, 0.15); color: var(--grade-fail); }
+ 
+/* --- Empty State --- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 20px;
+  text-align: center;
+}
+ 
+.empty-icon { font-size: 2rem; }
+.empty-msg  { color: var(--text-muted); font-size: 0.9rem; }
+ 
+/* --- Form inputs full width --- */
+.form-input {
+  width: 100%;
+}
+ 
+/* --- Student Info Bar (result page) --- */
+.student-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+ 
+.student-info-bar > div {
+  background: var(--bg-surface);
+  padding: 16px 20px;
+  flex: 1 1 140px;
+  min-width: 0;
+}
+ 
+.info-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+ 
+.info-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+/* --- Result layout --- */
+.result-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+ 
+.form-card { position: sticky; top: 80px; }
+ 
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .result-layout {
+    grid-template-columns: 1fr;
+  }
+  .form-card { position: static; }
+}
+ 
+@media (max-width: 600px) {
+  .header-inner { padding: 0 16px; }
+  .brand-sub { display: none; }
+  .container { padding: 20px 16px 40px; }
+  .card { padding: 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .data-table th, .data-table td { padding: 8px; }
+  .student-info-bar > div { flex: 1 1 100px; padding: 12px 14px; }
+}
